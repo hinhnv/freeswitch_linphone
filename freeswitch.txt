@@ -1,0 +1,44 @@
+-chay server freeswitch:
+	cd /usr/src/freeswitch-1.10.3.-release/
+	sudo freeswitch
+-de gioi han so nguoi co the dang nhap vao server freeswitch:
+	<freeswitch> log [so luong gioi han] (default dang la 5)
+-de tao file config conference:
+	sudo gedit /usr/local/freeswitch/conf/autoload_configs/conferencre.conf.xml
+ (khong the tao file va viet bang vim)
+-copy vao note:
+<caller-controls>
+    <group name="default">
+      <control action="mute" digits="0"/>
+      <control action="deaf mute" digits="*"/>
+      <control action="energy up" digits="9"/>
+      <control action="energy equ" digits="8"/>
+      <control action="energy dn" digits="7"/>
+      <control action="vol talk up" digits="3"/>
+      <control action="vol talk zero" digits="2"/>
+      <control action="vol talk dn" digits="1"/>
+      <control action="vol listen up" digits="6"/>
+      <control action="vol listen zero" digits="5"/>
+      <control action="vol listen dn" digits="4"/>
+      <control action="hangup" digits="#"/>
+    </group>
+  </caller-controls>
+
+-de truy cap vao conference: call 3000 (sampling rate: 8kHz)
+co the lay mau lon hon thi vao phong khac (VD:3100-3199 rate:16kHz, ...)
+
+-de ghi am cuoc goi:
+/usr/local/freeswitch/records 
+Tao thu muc freeswitch/records/archive/
+conf/dialplan/default.xml
+<extension name="Local_Extension"> 
+    <condition field="destination_number" expression="^(10[01][0-8])$"> 
+them vao cac cau lenh
+<action application="set" data="RECORD_TITLE=Recording ${destination_number} ${caller_id_number} ${strftime(%Y-%m-%d %H:%M)}"/> 
+<action application="set" data="RECORD_COPYRIGHT=(c) 2011"/> 
+<action application="set" data="RECORD_SOFTWARE=FreeSWITCH"/> 
+<action application="set" data="RECORD_ARTIST=FreeSWITCH"/> 
+<action application="set" data="RECORD_COMMENT=FreeSWITCH"/> 
+<action application="set" data="RECORD_DATE=${strftime(%Y-%m-%d %H:%M)}"/> 
+<action application="set" data="RECORD_STEREO=true"/> 
+<action application="record_session" data="$${recordings_dir}/archive/${strftime(%Y-%m-%d-%H-%M-%S)}_${destination_number}_${caller_id_number}.wav"/> 
